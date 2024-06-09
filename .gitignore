@@ -1,0 +1,33 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
+/assets/Play of Shadows - 2019/
+/assets/Substance-less - 2019/
+/assets/The Data Flaneur - 2021/
+/assets/Pavilion.png
+/assets/Aura - 2019/
+/assets/De Binnentuin - 2018/
+/assets/Lamp - 2020/
+/assets/Nazar - 2021/
+/assets/OUROBOROS - 2022/
