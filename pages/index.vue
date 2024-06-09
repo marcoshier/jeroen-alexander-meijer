@@ -18,7 +18,13 @@ window.WebFontConfig = {
 const leapis = `${location.protocol}//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js`
 useScriptTag(leapis).load()
 
-let w = window
+let finished = ref(false)
+
+function isFinished() {
+  finished.value = true
+}
+
+const w = window
 </script>
 
 <template>
@@ -27,9 +33,9 @@ let w = window
     <SplashScreen>
     </SplashScreen>
 
-    <TunnelView type="works"></TunnelView>
-    <TunnelView type="words"></TunnelView>
-    <LoadingBar ></LoadingBar>
+    <TunnelView type="works" :show="finished"></TunnelView>
+    <TunnelView type="words" :show="finished"></TunnelView>
+    <LoadingBar @anim-finished="isFinished()"></LoadingBar>
   </Application>
 </template>
 

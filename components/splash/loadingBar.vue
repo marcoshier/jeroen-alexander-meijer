@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {gsap} from "gsap";
+const emit = defineEmits(["animFinished"])
 
 const screen = useScreen();
 
@@ -10,7 +11,8 @@ onMounted(() => {
     value: 1.0,
     duration: 1.0,
     ease: "power3.out",
-    delay: 2.5
+    delay: 2.5,
+    onComplete: () => emit("animFinished")
   })
 })
 </script>
