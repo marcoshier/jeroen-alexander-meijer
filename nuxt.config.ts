@@ -7,11 +7,30 @@ export default defineNuxtConfig({
     css: ['the-new-css-reset/css/reset.css',
         'normalize.css/normalize.css'],
     devtools: { enabled: true },
-    modules: ['vue3-pixi-nuxt', ['@nuxtjs/google-fonts', {
-      families:  {
-        Inter: [400, 700]
-      }
-    }], "@nuxt/image"],
+    vite: {
+        server: {
+            hmr: {
+                overlay: false,
+            },
+        },
+    },
+    modules: [
+        'vue3-pixi-nuxt',
+        ['@nuxtjs/google-fonts', {
+          families:  {
+            Inter: [400, 700]
+          }
+        }],
+        "@nuxt/image",
+        '@nuxtjs/device'],
+    devServer: {
+        host: '192.168.1.158',
+        port: 3000,
+        https: {
+            key: '192.168.1.158-key.pem',
+            cert: '192.168.1.158.pem',
+        }
+    },
     components: [
         {
           path: '~/components',

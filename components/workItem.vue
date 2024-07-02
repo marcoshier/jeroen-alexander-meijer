@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {useMouse} from '@vueuse/core'
 import {type ContainerInst, type GraphicsInst} from "vue3-pixi";
-import {MASK_TYPES, MaskData, Texture} from "@pixi/core";
+import { Texture } from "@pixi/core";
+import {useDrawRect} from "~/composables/useDrawRect";
+import {gsap} from "gsap";
 
 const screen = useScreen()
 const mouse = reactive(useMouse())
@@ -15,39 +17,60 @@ const frect = reactive({
 
 const props = defineProps({
   idx: Number,
-  img: String
+  img: String,
+  cntSelected: Number,
+  motionData: {
+    type: Object,
+    default: () => ({
+      active: false,
+      xAngle: 0.0,
+      yAngle: 0.0
+    })
+  }
 })
 
 const texture = Texture.from(props.img as string)
 const boundsRef = ref<GraphicsInst>()
 
-const width = ref(Math.pow(0.9, props.idx!) * screen.value.width / 2.0)
-const height = ref(Math.pow(0.9, props.idx!) * screen.value.height)
+const { isMobile } = useDevice();
+const isScreenWidthSmall = ref(screen.value.width < 480.0)
 
 const containerRef = ref<ContainerInst>()
 
-function clamp(num: number, lower: number, upper: number) {
-  return Math.min(Math.max(num, lower), upper);
-}
+const state = reactive({
+  selT: 0.0
+})
+
+watch(() => props.cntSelected, (first, second) => {
+  if (first == 0) {
+    gsap.to(state, {
+      selT: 1.0,
+      duration: 0.5,
+      ease: "power3.inOut"
+    })
+  } else if(first == 1) {
+    gsap.to(state, {
+      selT: -1.0,
+      duration: 0.5,
+      ease: "power3.inOut"
+    })
+  }
+});
 
 function drawRect(graphics: GraphicsInst) {
 
-  const uvpos = {
-    x: clamp(mouse.x / (screen.value.width * 0.5), 0.0, 1.0),
-    y: clamp(mouse.y / (screen.value.height), 0.0, 1.0)
-  }
+  const sw = (isMobile || isScreenWidthSmall.value) ? screen.value.width : screen.value.width / 2.0
+  const sh = (isMobile || isScreenWidthSmall.value) ? screen.value.height * (0.5 + 0.425 * state.selT) : screen.value.height
 
-  const rect = useRectangleFromUV(1.0 - uvpos.x, 1.0 - uvpos.y, 0.0, 0.0, screen.value.width / 2.0, screen.value.height, width.value, height.value)
-  frect.x = rect.x
-  frect.y = rect.y
-  frect.width = rect.width
-  frect.height = rect.height
+  const rw = ref(Math.pow(0.9, props.idx!) * sw)
+  const rh = ref(Math.pow(0.9, props.idx!) * sh)
 
-  graphics.clear()
-  graphics.lineStyle(1, 0x00000, 1)
-  graphics.beginFill("#FFFFFF")
-  graphics.drawRect(0.0, 0.0, rect.width, rect.height)
-  graphics.endFill()
+  const pointer = props.motionData.active ? { x: props.motionData.xAngle, y: props.motionData.yAngle } : { x: mouse.x, y: mouse.y }
+  const {x, y, w, h} = useDrawRect(isMobile, pointer.x, pointer.y, sw, sh, rw.value, rh.value, graphics)
+  frect.x = x
+  frect.y = y
+  frect.width = w
+  frect.height = h
 }
 
 </script>
@@ -59,11 +82,12 @@ function drawRect(graphics: GraphicsInst) {
       :y="frect.y"
       :width="frect.width"
       :height="frect.height"
+      :alpha="state.selT"
   >
     <sprite
             :mask="boundsRef"
             :texture="texture"
-            :width="100.0",
+            :width="100.0"
             :height="100.0">
     </sprite>
 

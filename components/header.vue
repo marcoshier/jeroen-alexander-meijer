@@ -5,13 +5,6 @@
 <template>
 <header>
   <h1>J:A:M</h1>
-
-  <ul>
-    <li><NuxtLink to="/"><h1>WORKS</h1></NuxtLink></li>
-    <li><NuxtLink to="/"><h1>WORDS</h1></NuxtLink></li>
-    <li><NuxtLink to="/about"><h1>ABOUT</h1></NuxtLink></li>
-  </ul>
-
 </header>
 </template>
 
@@ -37,13 +30,10 @@ h1 {
   color: black;
 }
 
-ul {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-
-li {
-  padding: 0 40px;
+@media screen and (max-width: 480px) {
+  header {
+    padding: 10px;
+    top: -25px;
+  }
 }
 </style>

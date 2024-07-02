@@ -50,13 +50,13 @@ onMounted(() => {
     delay: 0.5,
     duration: 0.4,
     opacity: 0.0,
-    y: props.targetY
   })
 })
 
 </script>
   <template>
   <text
+      :resolution="2"
       :anchor-x="anchorX"
       :anchor-y="anchorY"
       :x="textProperties.x"
