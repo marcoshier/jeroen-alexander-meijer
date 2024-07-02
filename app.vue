@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
-import {settings} from "@pixi/settings";
-import {SCALE_MODES} from "@pixi/constants";
+import { SCALE_MODES, settings } from 'pixi.js'
 import {BaseTexture} from "@pixi/core";
 
 BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST
-
 
 gsap.registerPlugin(PixiPlugin);
 </script>

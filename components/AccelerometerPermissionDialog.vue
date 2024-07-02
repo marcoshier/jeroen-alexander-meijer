@@ -1,11 +1,19 @@
 <script setup lang="ts">
-const emit = defineEmits(['permission-response'])
+import Quaternion from "quaternion";
+
+const emit = defineEmits(['accmotion'])
 
 interface DeviceOrientationEventiOs extends DeviceOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
 
-const permission = ref("")
+const motionData = reactive({
+  active: false,
+  xAngle: 0.0,
+  yAngle: 0.0,
+})
+
+const permission = ref("Please allow accelerometer permission")
 
 function requestOrientationPermission() {
   const doe = DeviceOrientationEvent as unknown as DeviceOrientationEventiOs
@@ -14,7 +22,22 @@ function requestOrientationPermission() {
         .then(permissionState => {
           permission.value = permissionState
           if (permissionState === 'granted') {
-            emit('permission-response', permissionState)
+
+            motionData.active = true;
+            const deg = Math.PI / 180;
+
+            window.addEventListener("deviceorientation", event => {
+
+              const q = Quaternion.fromEulerLogical((event.alpha ?? 0.0) * deg, (event.beta ?? 0.0) * deg, -(event.gamma ?? 0.0) * deg, 'ZXY');
+              const mat = q.toMatrix(false);
+
+              motionData.xAngle = motionData.xAngle * 0.5 + mat[6] * 0.5;
+              motionData.yAngle = motionData.yAngle * 0.5 + mat[8] * 0.5;
+
+              emit("accmotion",  { active: motionData.active, xAngle: motionData.xAngle, yAngle: motionData.yAngle })
+            }, true)
+
+
           }
         })
         .catch(console.error);
@@ -24,7 +47,7 @@ function requestOrientationPermission() {
 
 <template>
 <div id="dialog-area" @click="requestOrientationPermission">
-  <p>{{ permission }}</p>
+  <p>{{ permission}}</p>
 </div>
 </template>
 

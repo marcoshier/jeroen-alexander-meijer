@@ -24,11 +24,11 @@ export default defineNuxtConfig({
         "@nuxt/image",
         '@nuxtjs/device'],
     devServer: {
-        host: '192.168.1.158',
+        host: '192.168.1.148',
         port: 3000,
         https: {
-            key: '192.168.1.158-key.pem',
-            cert: '192.168.1.158.pem',
+            key: '192.168.1.148-key.pem',
+            cert: '192.168.1.148.pem',
         }
     },
     components: [

@@ -18,13 +18,19 @@ window.WebFontConfig = {
 }
 
 const { isMobile, isIos } = useDevice();
-let orientationPermission = ref("prompt");
 
 let motionData = reactive({
   active: false,
   xAngle: 0.0,
   yAngle: 0.0,
 })
+
+
+function handleMotion(data: { active: boolean, xAngle: number, yAngle: number }) {
+  motionData.active = data.active
+  motionData.xAngle = data.xAngle
+  motionData.yAngle = data.yAngle
+}
 
 const indexSelected = ref(-1)
 
@@ -62,27 +68,7 @@ const appRef=ref()
 onMounted(() => {
   watch(animFinished, async (newState, oldState) => {
     if (newState == true) {
-      if (isMobile) {
-
-        watch(orientationPermission, async (newState, oldState) => {
-          if (newState == "granted") {
-            motionData.active = true;
-
-
-            const deg = Math.PI / 180;
-            window.addEventListener("deviceorientation", event => {
-
-              const q = Quaternion.fromEulerLogical((event.alpha ?? 0.0) * deg, (event.beta ?? 0.0) * deg, -(event.gamma ?? 0.0) * deg, 'ZXY');
-              const mat = q.toMatrix(false);
-
-              motionData.xAngle = motionData.xAngle * 0.5 + mat[6] * 0.5;
-              motionData.yAngle = motionData.yAngle * 0.5 + mat[8] * 0.5;
-            }, true)
-
-          }
-        });
-
-      } else {
+      if (!isMobile)  {
         window.addEventListener("mousemove", (event) => {
           if (event.x < window.innerWidth / 2.0) {
             animSecond.reverse()
@@ -121,8 +107,8 @@ const w = window
   </div>
 
 
-  <AccelerometerPermissionDialog @permission-response="(status) => orientationPermission = status" v-if="(isMobile && isIos) && orientationPermission != 'granted'"></AccelerometerPermissionDialog>
-    <Application ref="appRef" v-if="fontsLoaded" :backgroundAlpha="0.0" :antialias="true" :resize-to="w">
+  <AccelerometerPermissionDialog v-show="(isMobile && isIos) && !motionData.active" @accmotion="handleMotion"></AccelerometerPermissionDialog>
+    <Application ref="appRef" v-if="fontsLoaded" :backgroundAlpha="0.0" :antialias="true" :resolution="2*w.devicePixelRatio" :resize-to="w">
       <SplashScreen>
       </SplashScreen>
 
