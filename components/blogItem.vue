@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {useMouse} from '@vueuse/core'
 import {type ContainerInst, type GraphicsInst} from "vue3-pixi";
-import {useDrawRect} from "~/composables/useDrawRect";
 import {gsap} from "gsap";
 
 const screen = useScreen()

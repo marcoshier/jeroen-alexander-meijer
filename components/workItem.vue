@@ -2,7 +2,6 @@
 import {useMouse} from '@vueuse/core'
 import {type ContainerInst, type GraphicsInst} from "vue3-pixi";
 import { Texture } from "@pixi/core";
-import {useDrawRect} from "~/composables/useDrawRect";
 import {gsap} from "gsap";
 
 const screen = useScreen()
