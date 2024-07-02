@@ -2,7 +2,7 @@
 import {useMouse} from '@vueuse/core'
 import {type ContainerInst, type GraphicsInst} from "vue3-pixi";
 import {gsap} from "gsap";
-import {useDrawBoundingBox} from "~/composables/useDrawRect";
+import {useDrawAnchoredBB} from "~/composables/useDrawAnchoredBB";
 
 const screen = useScreen()
 const mouse = reactive(useMouse())
@@ -63,7 +63,7 @@ function drawRect(graphics: GraphicsInst) {
 
 
   const pointer = props.motionData.active ? { x: props.motionData.xAngle, y: props.motionData.yAngle } : { x: mouse.x, y: mouse.y }
-  const {x, y, w, h} = useDrawBoundingBox((isMobile || isScreenWidthSmall.value), pointer.x, pointer.y, sw, sh, rw.value, rh.value, graphics)
+  const {x, y, w, h} = useDrawAnchoredBB((isMobile || isScreenWidthSmall.value), pointer.x, pointer.y, sw, sh, rw.value, rh.value, graphics)
   frect.x = x
   frect.y = y - (screen.value.height * 0.425 * state.selT)
   frect.width = w
