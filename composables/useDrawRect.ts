@@ -1,6 +1,6 @@
 import type {GraphicsInst} from "vue3-pixi";
 
-export function useDrawRect(isMobile: boolean, pointerX: number, pointerY: number, sw: number, sh: number, rw: number, rh: number, graphics: GraphicsInst) {
+export function useDrawBoundingBox(isMobile: boolean, pointerX: number, pointerY: number, sw: number, sh: number, rw: number, rh: number, graphics: GraphicsInst) {
 
     const uvpos = {
         x: isMobile ? useMap(-0.75, 0.75, 0.0, 1.0, pointerX, true) : useClamp(pointerX / sw, 0.0, 1.0),
