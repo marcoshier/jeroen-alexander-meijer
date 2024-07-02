@@ -61,14 +61,22 @@ function drawRect(graphics: GraphicsInst) {
   const rw = ref(Math.pow(0.9, props.idx!) * sw)
   const rh = ref(Math.pow(0.9, props.idx!) * sh)
 
+  const yOff = (isMobile || isScreenWidthSmall.value) ?  -(screen.value.height * 0.425 * state.selT) : 0.0
 
   const pointer = props.motionData.active ? { x: props.motionData.xAngle, y: props.motionData.yAngle } : { x: mouse.x, y: mouse.y }
   const {x, y, w, h} = useDrawAnchoredBB((isMobile || isScreenWidthSmall.value), pointer.x, pointer.y, sw, sh, rw.value, rh.value, graphics)
   frect.x = x
-  frect.y = y - (screen.value.height * 0.425 * state.selT)
+  frect.y = y + yOff
   frect.width = w
   frect.height = h
 }
+
+
+onBeforeMount(() => {
+  if (!isMobile) {
+    state.selT = 1.0
+  }
+})
 
 </script>
 

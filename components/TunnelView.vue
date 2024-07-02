@@ -13,7 +13,7 @@ const props = defineProps({
     })
   },
   selected: Number,
-  cntOpacity: 0.0,
+  cntOpacity: Number,
   fontFamily: {
     type: String,
     default: 'Inter'
@@ -86,7 +86,12 @@ onBeforeMount(() => {
   })
 
   imagesLoaded = true
+  if (!isMobile) {
+    elOpacity.value = 1.0
+  }
 })
+
+// /
 
 </script>
 
@@ -94,7 +99,7 @@ onBeforeMount(() => {
   <container
   :x="offsetX()"
   :y="offsetY()"
-  :alpha="elOpacity.value * cntOpacity"
+  :alpha="elOpacity.value * (cntOpacity ?? 0.0)"
   >
     <work-item
         v-if="type=='works' && imagesLoaded"

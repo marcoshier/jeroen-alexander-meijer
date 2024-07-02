@@ -73,6 +73,12 @@ function drawRect(graphics: GraphicsInst) {
   frect.height = h
 }
 
+onBeforeMount(() => {
+  if (!isMobile) {
+    state.selT = 1.0
+  }
+})
+
 </script>
 
 <template>

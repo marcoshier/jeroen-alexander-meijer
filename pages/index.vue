@@ -3,6 +3,7 @@ import {useScriptTag} from "@vueuse/core";
 import Quaternion from "quaternion";
 import { gsap } from "gsap";
 import LoadingBar from "~/components/splash/loadingBar.vue";
+import type {GraphicsInst} from "vue3-pixi";
 
 const leapis = `${location.protocol}//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js`
 useScriptTag(leapis).load()
@@ -64,18 +65,28 @@ function handleClick(event: MouseEvent) {
 }
 
 const appRef=ref()
+let animFinished = ref(false)
 
 onMounted(() => {
   watch(animFinished, async (newState, oldState) => {
     if (newState == true) {
       if (!isMobile)  {
+        let last = -1;
         window.addEventListener("mousemove", (event) => {
           if (event.x < window.innerWidth / 2.0) {
-            animSecond.reverse()
-            animFirst.play()
+            if(last != 0) {
+              console.log("0")
+              last = 0;
+              animSecond.reverse()
+              animFirst.play()
+            }
           } else {
-            animFirst.reverse()
-            animSecond.play()
+            if(last != 1) {
+              console.log("1")
+              last = 1;
+              animFirst.reverse()
+              animSecond.play()
+            }
           }
         })
       }
@@ -83,20 +94,27 @@ onMounted(() => {
   })
 })
 
+const w = window
 
+function drawLaser(graphics: GraphicsInst) {
 
-let animFinished = ref(false)
+  graphics.clear()
+  graphics.lineStyle(1, 0xFF00CC, 1)
+  graphics.moveTo(w.innerWidth / 2.0, w.innerHeight / 2.0);
+  graphics.lineTo(w.innerWidth / 2.0 + motionData.xAngle * 150.0, w.innerHeight / 2.0 + -motionData.yAngle * 150.0)
+
+}
+
 function isAnimFinished() {
   animFinished.value = true
 }
 
 
-const w = window
 </script>
 
 <template>
 
-  <div id="titles-cnt" @click="handleClick" >
+  <div id="titles-cnt" @click="handleClick">
     <h1 id="title-works" class="section-title" :class="{ 'works-works-selected': (indexSelected == 0), 'works-words-selected': (indexSelected == 1) }">
       WORKS
     </h1>
@@ -115,6 +133,9 @@ const w = window
       <TunnelView type="works" :show="animFinished" :motionData="motionData" :cnt-opacity="opacities.first" :selected="indexSelected"></TunnelView>
       <TunnelView type="words" :show="animFinished" :motionData="motionData" :cnt-opacity="opacities.second" :selected="indexSelected"></TunnelView>
       <LoadingBar @anim-finished="isAnimFinished()" :sel-idx="indexSelected"></LoadingBar>
+
+      <Graphics v-if="isMobile" @render="drawLaser">
+      </Graphics>
     </Application>
 
 
