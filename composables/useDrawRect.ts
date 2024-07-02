@@ -1,5 +1,4 @@
 import type {GraphicsInst} from "vue3-pixi";
-import {useClamp} from "~/composables/useClamp";
 
 export function useDrawRect(isMobile: boolean, pointerX: number, pointerY: number, sw: number, sh: number, rw: number, rh: number, graphics: GraphicsInst) {
 
